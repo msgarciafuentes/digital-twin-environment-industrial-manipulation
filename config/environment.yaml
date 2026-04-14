@@ -1,0 +1,17 @@
+# Environment configuration for the industrial manipulation simulation.
+
+simulation:
+  timestep: 0.002          # Simulation timestep in seconds
+  gravity: [0, 0, -9.81]   # Gravity vector (m/s²)
+
+environment:
+  model_path: "assets/models/scene.xml"
+  render_mode: "human"     # "human" for interactive viewer, "rgb_array" for offscreen
+  max_episode_steps: 1000
+
+observation:
+  include_qpos: true
+  include_qvel: true
+
+reward:
+  type: "sparse"           # "sparse" or "dense"

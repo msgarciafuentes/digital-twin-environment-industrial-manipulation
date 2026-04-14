@@ -47,7 +47,9 @@ class ManipulationEnv(gym.Env):
             low=-np.inf, high=np.inf, shape=(obs_size,), dtype=np.float64
         )
 
-        # Action: one entry per actuator (empty until actuators are added)
+        # Action: one entry per actuator.  When the model has no actuators
+        # yet (nu == 0), default to a single no-op action dimension so that
+        # the action space is always valid for sampling.
         num_actuators = max(self.model.nu, 1)
         self.action_space = spaces.Box(
             low=-1.0, high=1.0, shape=(num_actuators,), dtype=np.float64

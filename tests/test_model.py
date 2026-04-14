@@ -15,6 +15,8 @@ class TestSceneModel:
     def test_model_loads(self) -> None:
         model = mujoco.MjModel.from_xml_path(SCENE_MODEL)
         assert model is not None
+        assert model.nq > 0
+        assert model.ngeom > 0
 
     def test_data_creation(self) -> None:
         model = mujoco.MjModel.from_xml_path(SCENE_MODEL)

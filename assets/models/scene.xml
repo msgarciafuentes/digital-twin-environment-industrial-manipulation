@@ -1,0 +1,39 @@
+<mujoco model="industrial_manipulation_scene">
+  <compiler angle="radian" meshdir="../meshes/" texturedir="../textures/"/>
+
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <default>
+    <joint damping="0.5"/>
+    <geom condim="3" friction="1 0.5 0.5"/>
+  </default>
+
+  <asset>
+    <texture type="2d" name="grid_texture" builtin="checker" width="512" height="512"
+             rgb1="0.2 0.3 0.4" rgb2="0.3 0.4 0.5"/>
+    <material name="grid_material" texture="grid_texture" texrepeat="5 5" reflectance="0.2"/>
+    <material name="robot_material" rgba="0.7 0.7 0.7 1"/>
+    <material name="target_material" rgba="0.9 0.2 0.2 1"/>
+  </asset>
+
+  <worldbody>
+    <!-- Ground plane -->
+    <geom name="floor" type="plane" size="2 2 0.1" material="grid_material"/>
+    <light name="top_light" pos="0 0 3" dir="0 0 -1" diffuse="0.8 0.8 0.8"/>
+
+    <!-- Workspace table -->
+    <body name="table" pos="0.5 0 0.4">
+      <geom name="table_top" type="box" size="0.4 0.6 0.02" rgba="0.6 0.5 0.4 1"/>
+      <geom name="table_leg1" type="cylinder" size="0.03 0.2" pos="0.35 0.55 -0.22" rgba="0.4 0.4 0.4 1"/>
+      <geom name="table_leg2" type="cylinder" size="0.03 0.2" pos="-0.35 0.55 -0.22" rgba="0.4 0.4 0.4 1"/>
+      <geom name="table_leg3" type="cylinder" size="0.03 0.2" pos="0.35 -0.55 -0.22" rgba="0.4 0.4 0.4 1"/>
+      <geom name="table_leg4" type="cylinder" size="0.03 0.2" pos="-0.35 -0.55 -0.22" rgba="0.4 0.4 0.4 1"/>
+    </body>
+
+    <!-- Manipulation target object -->
+    <body name="target_object" pos="0.5 0 0.45">
+      <joint name="target_free" type="free"/>
+      <geom name="target_geom" type="box" size="0.03 0.03 0.03" mass="0.1" material="target_material"/>
+    </body>
+  </worldbody>
+</mujoco>

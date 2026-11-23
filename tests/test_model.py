@@ -36,5 +36,12 @@ class TestSceneModel:
             mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, i)
             for i in range(model.nbody)
         ]
-        assert "table" in body_names
-        assert "target_object" in body_names
+        expected_bodies = {
+            "module_13_cluster_1",
+            "demo_wire_cluster_lr_slider",
+            "adaptor_cluster_1",
+            "switch_cluster_1",
+        }
+        assert expected_bodies.issubset(body_names), (
+            f"Missing scene bodies: {expected_bodies.difference(body_names)}"
+        )

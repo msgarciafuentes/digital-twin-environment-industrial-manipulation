@@ -2,12 +2,12 @@
 
   <!--
     Place this XML in the same folder as:
-      Switch_tile.stl
-      LED_tile.stl
-      Connector_tile.stl
-      300mm .stl
-      450mm.stl
-      600mm.stl
+      switch_tile.stl
+      led_tile.stl
+      connector_tile.stl
+      part_300_mm.stl
+      part_450_mm.stl
+      part_600_mm.stl
 
     Notes:
     - scale="0.001 0.001 0.001" assumes Fusion exported in millimeters.
@@ -30,15 +30,43 @@
 
     <!-- Comment out any mesh you do not want to load -->
 
-    <mesh name="switch_tile_mesh"     file="..\meshes\Switch_tile.stl"    scale="0.005 0.005 0.005"/>
-    <mesh name="led_tile_mesh"        file="..\meshes\LED_tile.stl"       scale="0.005 0.005 0.005"/>
-    <mesh name="connector_tile_mesh"  file="..\meshes\Connector_tile.stl" scale="0.005 0.005 0.005"/>
-    <mesh name="normal_tile_mesh"  file="..\meshes\tile.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="switch_tile_mesh"     file="../meshes/switch_tile.stl"    scale="0.005 0.005 0.005"/>
+    <mesh name="led_tile_mesh"        file="../meshes/led_tile.stl"       scale="0.005 0.005 0.005"/>
+    <mesh name="connector_tile_mesh"  file="../meshes/connector_tile.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="normal_tile_mesh"  file="../meshes/normal_tile.stl" scale="0.005 0.005 0.005"/>
 
     <!-- Note: this filename includes a space before .stl -->
-    <mesh name="part_300mm_mesh"      file="..\meshes\300mm.stl"         scale="0.005 0.005 0.005"/>
-    <mesh name="part_450mm_mesh"      file="..\meshes\450mm.stl"          scale="0.005 0.005 0.005"/>
-    <mesh name="part_600mm_mesh"      file="..\meshes\600mm.stl"          scale="0.005 0.005 0.005"/>
+    <mesh name="part_300mm_mesh"      file="../meshes/part_300_mm.stl"         scale="0.005 0.005 0.005"/>
+    <mesh name="part_450mm_mesh"      file="../meshes/part_450_mm.stl"          scale="0.005 0.005 0.005"/>
+    <mesh name="part_600mm_mesh"      file="../meshes/part_600_mm.stl"          scale="0.005 0.005 0.005"/>
+
+    <mesh name="fiber_optic_cord_mesh" file="../meshes/optic_cord.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="fiber_optic_adapter_mesh" file="../meshes/fiber_optic_adapter.stl" scale="0.004 0.004 0.004"/>
+    <mesh name="bnc_connector1" file="../meshes/bnc_connector_01.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="bnc_connector2" file="../meshes/bnc_connector_02.stl" scale="0.004 0.004 0.004"/>
+    <mesh name="banana_connector" file="../meshes/banana_connector.stl" scale="0.004 0.004 0.004"/>
+    
+    <!-- Visual-only STL component cluster. Keep these STL files in the same folder as this XML. -->
+    <mesh name="slide_top_mesh"        file="../meshes/slide_neck.stl"       scale="0.005 0.005 0.005"/>
+    <mesh name="slide_screw_mesh"      file="../meshes/slide_screw.stl"     scale="0.005 0.005 0.005"/>
+    <mesh name="leads1_mesh"           file="../meshes/lead_screw.stl"          scale="0.005 0.005 0.005"/>
+    <mesh name="cover_e_mesh"          file="../meshes/slide_head.stl"         scale="0.005 0.005 0.005"/>
+    <mesh name="buttom_mesh"           file="../meshes/slide_bottom.stl"          scale="0.005 0.005 0.005"/>
+    <mesh name="stepper_v1_mesh"       file="../meshes/stepper.obj"      scale="0.005 0.005 0.005"/>
+
+    <!-- Demo movable wire cluster meshes -->
+    <mesh name="demo_wire_optic_cord_mesh" file="../meshes/optic_cord.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="demo_wire_bnc_connector1_mesh" file="../meshes/bnc_connector_01.stl" scale="0.005 0.005 0.005"/>
+
+    <mesh name="module_13_base_mesh" file="../meshes/base.stl" scale="0.005 0.005 0.005"/>
+    <mesh name="module_13_slide1_mesh" file="../meshes/slide_cover.stl" scale="0.005 0.005 0.005"/>
+    
+    <!-- ========================= -->
+    <!--           TEXTURES        -->
+    <!-- ========================= -->
+
+    <texture name="wood_tex" type="2d" file="../textures/wood.png"/>
+    <material name="wood_mat" texture="wood_tex" texrepeat="3 3"/>
   </asset>
 
   <default>
@@ -77,113 +105,827 @@
     <!--        MESH BODIES        -->
     <!-- ========================= -->
 
+    <!-- ========================= -->
+    <!--       MODULE 13 CLUSTER   -->
+    <!-- ========================= -->
     <!--
-      Each body is separated and placed side by side.
-      You can comment out any whole body block whenever you want.
+      Module 13 structure:
+      - A rectangular support block similar in height to stepper
+      - base sits on top of the rectangle
+      - Two slide_cover sliders sit on top of base
+        - one normal
+        - one mirrored by 180-degree rotation
+
+      Move the whole module by changing only:
+      module_13_cluster_1 pos/euler
     -->
+    <body name="module_13_cluster_1" pos="-3.75 -0.07 0.05" euler="0 0 0">
+
+      <!-- Rectangular support block, similar height to stepper -->
+      <!-- stepper scaled height is approximately 0.3375 -->
+      <body name="module_13_support_body" pos="0 0 0">
+        <geom name="module_13_support_geom"
+              type="box"
+              size="0.13 0.155 0.1"
+              pos="0 0 0.11"
+              rgba="0.12 0.12 0.13 1"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+
+      <!-- Fixed base sitting on top of the rectangle -->
+      <body name="module_13_base_body" pos="0.0015 -0.045 0.2" euler="0 0 180">
+        <geom name="module_13_base_geom"
+              type="mesh"
+              mesh="module_13_base_mesh"
+              rgba="0.8 0.1 0.6 1"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+
+      <!-- ========================= -->
+      <!--     NORMAL SLIDER         -->
+      <!-- ========================= -->
+      <body name="module_13_normal_slide_body" pos="0.05 0 0.25">
+
+        <!-- Required because this body has a slide joint -->
+        <inertial pos="0 0 0"
+                  mass="0.10"
+                  diaginertia="0.001 0.001 0.001"/>
+
+        <!-- Forward/back slide movement -->
+        <joint name="module_13_normal_slide_joint"
+              type="slide"
+              axis="1 0 0"
+              range="-1 0.04"
+              limited="true"
+              damping="60"/>
+
+        <!-- Offset centers the STL mesh on the slider body -->
+        <body name="module_13_normal_slide_mesh_body"
+              pos="-0.246 0.043775 -0.050153"
+              euler="0 0 0">
+
+          <geom name="module_13_normal_slide_geom"
+                type="mesh"
+                mesh="module_13_slide1_mesh"
+                rgba="0.8 0.1 0.6 1"
+                contype="0"
+                conaffinity="0"/>
+        </body>
+      </body>
+
+      <!-- ========================= -->
+      <!--     MIRRORED SLIDER       -->
+      <!-- ========================= -->
+      <body name="module_13_mirrored_slide_body" pos="-0.05 0 0.25">
+
+        <!-- Required because this body has a slide joint -->
+        <inertial pos="0 0 0"
+                  mass="0.10"
+                  diaginertia="0.001 0.001 0.001"/>
+
+        <!-- Forward/back slide movement -->
+        <joint name="module_13_mirrored_slide_joint"
+              type="slide"
+              axis="-1 0 0"
+              range="-1 0.04"
+              limited="true"
+              damping="60"/>
+
+        <!-- Mirrored visually by rotating the STL 180 degrees around Z -->
+        <body name="module_13_mirrored_slide_mesh_body"
+              pos="0.246 -0.043775 -0.050153"
+              euler="0 0 180">
+
+          <geom name="module_13_mirrored_slide_geom"
+                type="mesh"
+                mesh="module_13_slide1_mesh"
+                rgba="0.8 0.1 0.6 1"
+                contype="0"
+                conaffinity="0"/>
+        </body>
+      </body>
+
+    </body> 
+
+    <!-- ========================= -->
+    <!--   MOVABLE WIRE CLUSTER    -->
+    <!-- ========================= -->
+    <!--
+      Demonstration wire cluster.
+
+      Controls:
+      - demo_wire_left_right_slide moves left/right along local X
+      - demo_wire_front_back_slide moves front/back along local Z
+
+      The cable bridge visually connects:
+      - demo_optic_cord_body
+      - demo_bnc_connector1_body
+
+      Visual-only for now: contype/conaffinity are 0.
+    -->
+    <body name="demo_wire_cluster_lr_slider" pos="-3.75 -0.75 1.75" euler="270 0 0">
+
+      <!-- Required because this body has a joint -->
+      <inertial pos="0 0 0"
+                mass="0.10"
+                diaginertia="0.001 0.001 0.001"/>
+
+      <!-- Left/right slider -->
+      <joint name="demo_wire_left_right_slide"
+            type="slide"
+            axis="1 0 0"
+            range="-0.60 0.60"
+            limited="true"
+            damping="80"/>
+
+      <body name="demo_wire_cluster_fb_slider" pos="0 0 0">
+
+        <!-- Required because this body has a joint -->
+        <inertial pos="0 0 0"
+                  mass="0.10"
+                  diaginertia="0.001 0.001 0.001"/>
+
+        <!-- Front/back slider -->
+        <joint name="demo_wire_front_back_slide"
+              type="slide"
+              axis="0 0 1"
+              range="-1 1"
+              limited="true"
+              damping="80"/>
+
+        <!-- Wire 1 / first connector head -->
+        <body name="demo_optic_cord_body" pos="0.01 0 0" euler="0 0 0">
+          <geom name="demo_optic_cord_geom"
+                type="mesh"
+                mesh="demo_wire_bnc_connector1_mesh"
+                rgba="0.42 0.43 0.46 1"
+                contype="0"
+                conaffinity="0"/>
+        </body>
+
+        <!-- Visual cable bridge between the two connector heads -->
+        <!-- Slightly arched cable made from capsule segments -->
+        <body name="demo_wire_bridge_cable_body" pos="-0.02 0 -0.1">
+
+          <geom name="demo_wire_bridge_cable_seg_01"
+                type="capsule"
+                fromto="0.035 0.000 0.015   0.045 0.055 0.014"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_02"
+                type="capsule"
+                fromto="0.045 0.055 0.014   0.055 0.105 0.013"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_03"
+                type="capsule"
+                fromto="0.055 0.105 0.013   0.070 0.155 0.012"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_04"
+                type="capsule"
+                fromto="0.070 0.155 0.012   0.085 0.205 0.010"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_05"
+                type="capsule"
+                fromto="0.085 0.205 0.010   0.105 0.250 0.008"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_06"
+                type="capsule"
+                fromto="0.105 0.250 0.008   0.125 0.290 0.006"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_07"
+                type="capsule"
+                fromto="0.125 0.290 0.006   0.145 0.325 0.005"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_08"
+                type="capsule"
+                fromto="0.145 0.325 0.005   0.165 0.350 0.004"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <!-- deepest sagging middle section -->
+          <geom name="demo_wire_bridge_cable_seg_09"
+                type="capsule"
+                fromto="0.165 0.350 0.004   0.185 0.365 0.004"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_10"
+                type="capsule"
+                fromto="0.185 0.365 0.004   0.205 0.365 0.004"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_11"
+                type="capsule"
+                fromto="0.205 0.365 0.004   0.225 0.350 0.004"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_12"
+                type="capsule"
+                fromto="0.225 0.350 0.004   0.245 0.325 0.005"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_13"
+                type="capsule"
+                fromto="0.245 0.325 0.005   0.265 0.290 0.006"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_14"
+                type="capsule"
+                fromto="0.265 0.290 0.006   0.285 0.250 0.008"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_15"
+                type="capsule"
+                fromto="0.285 0.250 0.008   0.300 0.205 0.010"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_16"
+                type="capsule"
+                fromto="0.300 0.205 0.010   0.310 0.155 0.012"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_17"
+                type="capsule"
+                fromto="0.310 0.155 0.012   0.318 0.105 0.013"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_18"
+                type="capsule"
+                fromto="0.318 0.105 0.013   0.322 0.055 0.014"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <geom name="demo_wire_bridge_cable_seg_19"
+                type="capsule"
+                fromto="0.322 0.055 0.014   0.325 0.000 0.015"
+                size="0.008"
+                rgba="0.92 0.86 0.72 1"
+                contype="0"
+                conaffinity="0"/>
+
+          <!-- Rounded nodes for elastic segmented look -->
+          <geom name="demo_wire_bridge_cable_node_01" type="sphere" pos="0.055 0.105 0.013" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_02" type="sphere" pos="0.085 0.205 0.010" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_03" type="sphere" pos="0.125 0.290 0.006" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_04" type="sphere" pos="0.165 0.350 0.004" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_05" type="sphere" pos="0.205 0.365 0.004" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_06" type="sphere" pos="0.245 0.325 0.005" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_07" type="sphere" pos="0.285 0.250 0.008" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_08" type="sphere" pos="0.310 0.155 0.012" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+          <geom name="demo_wire_bridge_cable_node_09" type="sphere" pos="0.322 0.055 0.014" size="0.008" rgba="0.92 0.86 0.72 1" contype="0" conaffinity="0"/>
+
+        </body>
+
+        <!-- Wire 2 / second connector head -->
+        <body name="demo_bnc_connector1_body" pos="0.3 0 0" euler="0 0 0">
+
+          <!-- Required because this body has a hinge joint -->
+          <inertial pos="0 0 0"
+                    mass="0.10"
+                    diaginertia="0.001 0.001 0.001"/>
+
+          <!-- Rotation joint for the wire head -->
+          <joint name="demo_bnc_connector1_rotate_joint"
+                type="hinge"
+                axis="0 0 1"
+                range="-180 180"
+                limited="true"
+                damping="2.0"/>
+
+          <geom name="demo_bnc_connector1_geom"
+                type="mesh"
+                mesh="demo_wire_bnc_connector1_mesh"
+                rgba="0.62 0.64 0.68 1"
+                contype="0"
+                conaffinity="0"/>
+        </body>
+
+      </body>
+    </body>
+
+    <!-- ========================= -->
+    <!--          SOCKETS          -->
+    <!-- ========================= -->
+
+    <body name="adaptor_cluster_1" pos="-3.125 0.33 2.05" euler="90 0 0">
+      <body name="fiber_optic_adapter_body" pos="-0.01 0.05 0" euler="180 0 0">
+        <geom name="fiber_optic_adapter_geom"
+              type="mesh"
+              mesh="fiber_optic_adapter_mesh"
+              rgba="0.40 0.90 0.82 1"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+
+
+      <body name="bnc_connector2_body" pos="0.28 -0.3 0" euler="0 0 0">
+        <geom name="bnc_connector2_geom"
+              type="mesh"
+              mesh="bnc_connector2"
+              rgba="0.75 0.10 0.12 1"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+
+      <body name="banana_connector_body" pos="-0.01 -0.3 0" euler="180 0 0">
+        <geom name="banana_connector_geom"
+              type="mesh"
+              mesh="banana_connector"
+              rgba="0.62 0.64 0.68 1"
+              contype="0"
+              conaffinity="0"/>
+      </body>
+    </body>
+  
+    <!-- ========================= -->
+    <!--        SWITCHES           -->
+    <!-- ========================= -->
+    <!-- coord for cluster LEFT to RIGHT: -3.85, -3.125, -2.36, -1.625 -->
+    <!-- coord for cluster DOWN to UP: 0.56, 1.30, 2.05-->
+      <!-- 4-switch cluster.
+        Move the whole group by changing only this pos. -->
+      <body name="switch_cluster_1" pos="-3.85 0.33 2.05" euler="90 0 0">
+
+          <!-- Top-left switch -->
+          <body name="panel_switch_mount_1" pos="-0.075 0.06 0">
+              <geom name="panel_switch_base_1" class="switch_visual"
+                    size="0.035 0.02 0.008"
+                    pos="0 0 0"
+                    rgba="0.15 0.15 0.15 1"/>
+
+              <body name="panel_switch_toggle_1" pos="0 0 0.008">
+                  <joint name="panel_switch_hinge_1"
+                        type="hinge"
+                        axis="1 0 0"
+                        range="-0.6 0.6"
+                        damping="0.4"
+                        frictionloss="0.05"/>
+
+                  <geom name="panel_switch_lever_1"
+                        class="switch_visual"
+                        type="box"
+                        size="0.008 0.012 0.03"
+                        pos="0 0 0.03"
+                        rgba="0.85 0.15 0.15 1"/>
+              </body>
+          </body>
+
+          <!-- Top-right switch -->
+          <body name="panel_switch_mount_2" pos="0.3 0.06 0">
+              <!-- black outer ring / housing -->
+              <geom name="panel_push_button_ring"
+                    class="switch_visual"
+                    type="cylinder"
+                    size="0.035 0.02"
+                    pos="0 0 0.004"
+                    rgba="0.02 0.02 0.02 1"
+                    contype="0"
+                    conaffinity="0"/>
+
+              <!-- red pressable button -->
+              <body name="panel_push_button" pos="0 0 0.04">
+                  <joint name="panel_switch_hinge_2"
+                        type="slide"
+                        axis="0 0 -1"
+                        range="0 0.05"
+                        damping="1.0"
+                        stiffness="8.0"
+                        frictionloss="0.02"/>
+
+                  <geom name="panel_push_button_red"
+                        type="cylinder"
+                        size="0.026 0.02"
+                        pos="0 0 0"
+                        rgba="0.85 0.05 0.05 1"
+                        contype="1"
+                        conaffinity="1"
+                        density="500"/>
+              </body>
+          </body>
+
+          <!-- Bottom-left switch -->
+          <body name="panel_switch_mount_3" pos="-0.075 -0.3 0">
+              <geom name="panel_switch_base_3" class="switch_visual"
+                    size="0.035 0.02 0.008"
+                    pos="0 0 0"
+                    rgba="0.15 0.15 0.15 1"/>
+
+              <body name="panel_switch_toggle_3" pos="0 0 0.008">
+                  <joint name="panel_switch_hinge_3"
+                        type="hinge"
+                        axis="1 0 0"
+                        range="-0.6 0.6"
+                        damping="0.4"
+                        frictionloss="0.05"/>
+
+                  <geom name="panel_switch_lever_3"
+                        class="switch_visual"
+                        type="box"
+                        size="0.008 0.012 0.03"
+                        pos="0 0 0.03"
+                        rgba="0.85 0.15 0.15 1"/>
+              </body>
+          </body>
+
+          <!-- Bottom-right switch -->
+          <body name="panel_switch_mount_4" pos="0.3 -0.3 0">
+              <geom name="panel_switch_base_4" class="switch_visual"
+                    size="0.035 0.02 0.008"
+                    pos="0 0 0"
+                    rgba="0.15 0.15 0.15 1"/>
+
+              <body name="panel_switch_toggle_4" pos="0 0 0.008">
+                  <joint name="panel_switch_hinge_4"
+                        type="hinge"
+                        axis="1 0 0"
+                        range="-0.6 0.6"
+                        damping="0.4"
+                        frictionloss="0.05"/>
+
+                  <geom name="panel_switch_lever_4"
+                        class="switch_visual"
+                        type="box"
+                        size="0.008 0.012 0.03"
+                        pos="0 0 0.03"
+                        rgba="0.85 0.15 0.15 1"/>
+              </body>
+          </body>
+
+      </body>
+
+      <body name="led_cluster_1" pos="-2.36 0.33 2.05" euler="90 0 0">
+
+        <!-- Top-left LED: white -->
+        <body name="panel_led_mount_1" pos="-0.075 0.06 0">
+            <geom name="panel_led_housing_1"
+                  type="cylinder"
+                  size="0.04 0.01"
+                  pos="0 0 0.005"
+                  rgba="0.02 0.02 0.02 1"
+                  contype="0"
+                  conaffinity="0"/>
+
+            <geom name="panel_led_white"
+                  type="cylinder"
+                  size="0.030 0.012"
+                  pos="0 0 0.018"
+                  rgba="1 1 1 1"
+                  contype="0"
+                  conaffinity="0"/>
+        </body>
+
+        <!-- Top-right LED: green -->
+        <body name="panel_led_mount_2" pos="0.3 0.06 0">
+            <geom name="panel_led_housing_2"
+                  type="cylinder"
+                  size="0.04 0.01"
+                  pos="0 0 0.005"
+                  rgba="0.02 0.02 0.02 1"
+                  contype="0"
+                  conaffinity="0"/>
+
+            <geom name="panel_led_green"
+                  type="cylinder"
+                  size="0.030 0.012"
+                  pos="0 0 0.018"
+                  rgba="0.05 0.9 0.1 1"
+                  contype="0"
+                  conaffinity="0"/>
+        </body>
+
+        <!-- Bottom-left LED: red -->
+        <body name="panel_led_mount_3" pos="-0.075 -0.3 0">
+            <geom name="panel_led_housing_3"
+                  type="cylinder"
+                  size="0.04 0.01"
+                  pos="0 0 0.005"
+                  rgba="0.02 0.02 0.02 1"
+                  contype="0"
+                  conaffinity="0"/>
+
+            <geom name="panel_led_red"
+                  type="cylinder"
+                  size="0.030 0.012"
+                  pos="0 0 0.018"
+                  rgba="1 0.05 0.03 1"
+                  contype="0"
+                  conaffinity="0"/>
+        </body>
+
+        <!-- Bottom-right LED: yellow -->
+        <body name="panel_led_mount_4" pos="0.3 -0.3 0">
+            <geom name="panel_led_housing_4"
+                  type="cylinder"
+                  size="0.04 0.01"
+                  pos="0 0 0.005"
+                  rgba="0.02 0.02 0.02 1"
+                  contype="0"
+                  conaffinity="0"/>
+
+            <geom name="panel_led_yellow"
+                  type="cylinder"
+                  size="0.030 0.012"
+                  pos="0 0 0.018"
+                  rgba="1 0.85 0.05 1"
+                  contype="0"
+                  conaffinity="0"/>
+        </body>
+      </body>
+
+    <!-- ========================= -->
+    <!--  LINEAR ACTUATOR CLUSTER  -->
+    <!-- ========================= -->
+    <!--
+      These STL files are grouped under one parent body so they move as one component.
+      This is visual-only for now: contype/conaffinity are 0, so it will not affect physics yet.
+      Move the whole component by changing only linear_actuator_cluster_1 pos/euler.
+    -->
+    <body name="linear_actuator_cluster_1" pos="-3.75 0.1 -0.06">
+
+      <body name="slide_top_body" pos="0 0 0">
+          <geom name="linear_actuator_slide_top_geom"
+                type="mesh"
+                mesh="slide_top_mesh"
+                rgba="0.8 0.1 0.6 1"
+                contype="0"
+                conaffinity="0"/>
+      </body>
+
+      <!-- Moving piston group: slide_screw + slide_head move together -->
+      <body name="linear_actuator_piston_body" pos="0 0 -0.06">
+
+          <joint name="linear_actuator_piston_slide"
+                type="slide"
+                axis="0 0 1"
+                range="0 0.4"
+                limited="true"
+                damping="200"/>
+
+          <body name="slide_screw_body" pos="0 0.4 0.4">
+              <geom name="linear_actuator_slide_screw_geom"
+                    type="mesh"
+                    mesh="slide_screw_mesh"
+                    rgba="0.8 0.1 0.6 1"
+                    contype="0"
+                    conaffinity="0"/>
+          </body>
+
+          <body name="cover_e_body" pos="0 -0.09 0.3">
+              <geom name="linear_actuator_cover_e_geom"
+                    type="mesh"
+                    mesh="cover_e_mesh"
+                    rgba="0.8 0.1 0.6 1"
+                    contype="0"
+                    conaffinity="0"/>
+          </body>
+
+      </body>
+
+      <body name="leads1_body" pos="0.01 -0.02 0.12">
+          <geom name="linear_actuator_leads1_geom"
+                type="mesh"
+                mesh="leads1_mesh"
+                rgba="0.8 0.1 0.6 1"
+                contype="0"
+                conaffinity="0"/>
+      </body>
+
+      <body name="buttom_body" pos="0.40 0.001 0.1">
+          <geom name="linear_actuator_buttom_geom"
+                type="mesh"
+                mesh="buttom_mesh"
+                rgba="0.8 0.1 0.6 1"
+                contype="0"
+                conaffinity="0"/>
+      </body>
+
+      <body name="stepper_v1_body" pos="0 0.1 0.13" euler="90 0 0">
+          <geom name="linear_actuator_stepper_v1_geom"
+                type="mesh"
+                mesh="stepper_v1_mesh"
+                rgba="0.12 0.12 0.13 1"
+                contype="0"
+                conaffinity="0"/>
+      </body>
+    </body>
+
 
    <!-- Ground first tile series -->
     <body name="switch_tile_body" pos="-1.50 0 0.05">
-      <geom name="switch_tile_geom" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
     
     <body name="led_tile_body" pos="-0.75 0 0.05">
-      <geom name="led_tile_geom" mesh="switch_tile_mesh" rgba="0.70 0.70 0.78 1"/>
+      <geom name="led_tile_geom" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
     
     <body name="connector_tile_body" pos="0.00 0 0.05">
-      <geom name="connector_tile_geom" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="connector_tile_body2" pos="0.75 0 0.05">
-      <geom name="connector_tile_geom2" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom2" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
   <!-- Ground second tile series -->
     <body name="connector_tile_body3" pos="-1.50 -0.75 0.05">
-      <geom name="connector_tile_geom3" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom3" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="connector_tile_body4" pos="-0.75 -0.75 0.05">
-      <geom name="connector_tile_geom4" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom4" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="connector_tile_body5" pos="0.00 -0.75 0.05">
-      <geom name="connector_tile_geom5" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom5" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="connector_tile_body6" pos="0.75 -0.75 0.05">
-      <geom name="connector_tile_geom6" mesh="switch_tile_mesh" rgba="0.78 0.72 0.70 1"/>
+      <geom name="connector_tile_geom6" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
   <!-- Upper first tile series -->
     <body name="switch_tile_body2" pos="-1.50 0.35 0.43" euler="90 0 0">
-      <geom name="switch_tile_geom2" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom2" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body3" pos="-0.75 0.35 0.43" euler="90 0 0">
-      <geom name="switch_tile_geom3" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom3" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body4" pos="0 0.35 0.43" euler="90 0 0">
-      <geom name="switch_tile_geom4" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
-
-      <!-- Simple toggle switch mounted on this panel -->
-      <body name="panel_switch_mount" pos="-1 0.02 0.00">
-        <geom name="panel_switch_base" class="switch_visual" size="0.035 0.02 0.008" pos="0 0 0" rgba="0.15 0.15 0.15 1"/>
-
-        <body name="panel_switch_toggle" pos="0 0 0.008">
-          <joint name="panel_switch_hinge" type="hinge" axis="1 0 0" range="-0.6 0.6" damping="0.4" frictionloss="0.05"/>
-          <geom name="panel_switch_lever" class="switch_visual" type="box" size="0.008 0.012 0.03" pos="0 0 0.03" rgba="0.85 0.15 0.15 1"/>
-        </body>
-      </body>
+      <geom name="switch_tile_geom4" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body5" pos="0.75 0.35 0.43" euler="90 0 0">
-      <geom name="switch_tile_geom5" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom5" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
   <!-- Upper second tile series -->
     <body name="switch_tile_body6" pos="-1.50 0.35 1.18" euler="90 0 0">
-      <geom name="switch_tile_geom6" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom6" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body7" pos="-0.75 0.35 1.18" euler="90 0 0">
-      <geom name="switch_tile_geom7" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom7" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body8" pos="0 0.35 1.18" euler="90 0 0">
-      <geom name="switch_tile_geom8" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom8" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body9" pos="0.75 0.35 1.18" euler="90 0 0">
-      <geom name="switch_tile_geom9" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom9" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
   <!-- Upper third tile series -->
     <body name="switch_tile_body10" pos="-1.50 0.35 1.93" euler="90 0 0">
-      <geom name="switch_tile_geom10" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom10" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body11" pos="-0.75 0.35 1.93" euler="90 0 0">
-      <geom name="switch_tile_geom11" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom11" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body12" pos="0 0.35 1.93" euler="90 0 0">
-      <geom name="switch_tile_geom12" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom12" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
 
     <body name="switch_tile_body13" pos="0.75 0.35 1.93" euler="90 0 0">
-      <geom name="switch_tile_geom13" mesh="switch_tile_mesh" rgba="0.75 0.75 0.75 1"/>
+      <geom name="switch_tile_geom13" mesh="normal_tile_mesh" material="wood_mat"/>
     </body>
   </worldbody>
 
-  <actuator>
-    <position name="panel_switch_act" joint="panel_switch_hinge" kp="15" ctrlrange="-0.6 0.6"/>
-  </actuator>
+<actuator>
+    <motor name="switch_motor_1" joint="panel_switch_hinge_1" gear="1"/>
+    <motor name="switch_motor_2" joint="panel_switch_hinge_2" gear="0.2"/>
+    <motor name="switch_motor_3" joint="panel_switch_hinge_3" gear="1"/>
+    <motor name="switch_motor_4" joint="panel_switch_hinge_4" gear="1"/>
+    <position name="linear_actuator_piston_motor"
+          joint="linear_actuator_piston_slide"
+          kp="100"
+          ctrlrange="0 1"
+          ctrllimited="true"/>
+    <!-- Wire cluster demo sliders -->
+    <position name="demo_wire_left_right_motor"
+              joint="demo_wire_left_right_slide"
+              kp="100"
+              ctrlrange="0 1"
+              ctrllimited="true"/>
 
-  <sensor>
-    <jointpos name="panel_switch_pos" joint="panel_switch_hinge"/>
-    <jointvel name="panel_switch_vel" joint="panel_switch_hinge"/>
-  </sensor>
+    <position name="demo_wire_front_back_motor"
+              joint="demo_wire_front_back_slide"
+              kp="100"
+              ctrlrange="0 1"
+              ctrllimited="true"/>
+
+    <!-- Rotate right wire connector head -->
+    <position name="demo_bnc_connector1_rotate_motor"
+              joint="demo_bnc_connector1_rotate_joint"
+              kp="50"
+              ctrlrange="0 1"
+              ctrllimited="true"/>
+
+    <!-- Module 13 normal slider actuator -->
+    <position name="module_13_normal_slide_motor"
+              joint="module_13_normal_slide_joint"
+              kp="100"
+              ctrlrange="0 1"
+              ctrllimited="true"/>
+
+    <!-- Module 13 mirrored slider actuator -->
+    <position name="module_13_mirrored_slide_motor"
+              joint="module_13_mirrored_slide_joint"
+              kp="100"
+              ctrlrange="0 1"
+              ctrllimited="true"/>
+</actuator>
+
+<sensor>
+    <jointpos name="panel_switch_pos_1" joint="panel_switch_hinge_1"/>
+    <jointvel name="panel_switch_vel_1" joint="panel_switch_hinge_1"/>
+
+    <jointpos name="panel_switch_pos_2" joint="panel_switch_hinge_2"/>
+    <jointvel name="panel_switch_vel_2" joint="panel_switch_hinge_2"/>
+
+    <jointpos name="panel_switch_pos_3" joint="panel_switch_hinge_3"/>
+    <jointvel name="panel_switch_vel_3" joint="panel_switch_hinge_3"/>
+
+    <jointpos name="panel_switch_pos_4" joint="panel_switch_hinge_4"/>
+    <jointvel name="panel_switch_vel_4" joint="panel_switch_hinge_4"/>
+
+    <!-- Wire cluster slider sensors -->
+    <jointpos name="demo_wire_left_right_pos" joint="demo_wire_left_right_slide"/>
+    <jointvel name="demo_wire_left_right_vel" joint="demo_wire_left_right_slide"/>
+
+    <jointpos name="demo_wire_front_back_pos" joint="demo_wire_front_back_slide"/>
+    <jointvel name="demo_wire_front_back_vel" joint="demo_wire_front_back_slide"/>
+
+    <!-- Module 13 normal slider sensors -->
+    <jointpos name="module_13_normal_slide_pos" joint="module_13_normal_slide_joint"/>
+    <jointvel name="module_13_normal_slide_vel" joint="module_13_normal_slide_joint"/>
+
+    <!-- Module 13 mirrored slider sensors -->
+    <jointpos name="module_13_mirrored_slide_pos" joint="module_13_mirrored_slide_joint"/>
+    <jointvel name="module_13_mirrored_slide_vel" joint="module_13_mirrored_slide_joint"/>
+</sensor>
 </mujoco>
